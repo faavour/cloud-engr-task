@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -17,3 +16,8 @@ func getTime(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(currentTime)
 }
 
+
+func main() {
+	http.HandleFunc("/time", getTime)
+	http.ListenAndServe(":8080", nil)
+}
