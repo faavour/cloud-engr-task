@@ -1,0 +1,8 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-west4-docker.pkg.dev/ditto-293914/cloud-engr-test/go-time-api:latest', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-west4-docker.pkg.dev/ditto-293914/cloud-engr-test/go-time-api:latest']
+images:
+- 'europe-west4-docker.pkg.dev/ditto-293914/cloud-engr-test/go-time-api:latest'
