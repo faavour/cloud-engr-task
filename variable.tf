@@ -13,4 +13,8 @@ variable "cluster_name" {
   type        = string
   default     = "cloud-engr-test"
 }
+variable "image" {
+  description = "Name of the container image"
+  type        = string
+}
 
