@@ -11,7 +11,7 @@ variable "region" {
 variable "cluster_name" {
   description = "Name of the cluster"
   type        = string
-  default     = "go-time-app"
+  default     = "go-time-apps"
 }
 variable "image" {
   description = "Name of the container image"
@@ -21,4 +21,5 @@ variable "k8s_context" {
   description = "context for the k8s cluster"
   type        = string
 }
+
 

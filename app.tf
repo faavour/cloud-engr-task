@@ -1,18 +1,4 @@
 data "google_client_config" "default" {}
-
-provider "kubernetes" {
-  host                   = "https://${google_container_cluster.default.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  config_context         = var.k8s_context
-  config_path            = "~/.kube/config" 
-  cluster_ca_certificate = base64decode(google_container_cluster.default.master_auth[0].cluster_ca_certificate)
-
-  ignore_annotations = [
-    "^autopilot\\.gke\\.io\\/.*",
-    "^cloud\\.google\\.com\\/.*"
-  ]
-}
-
 //The deployment
 
 resource "kubernetes_deployment_v1" "go_time_api" {
