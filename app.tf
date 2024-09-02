@@ -3,6 +3,8 @@ data "google_client_config" "default" {}
 provider "kubernetes" {
   host                   = "https://${google_container_cluster.default.endpoint}"
   token                  = data.google_client_config.default.access_token
+  config_context         = var.k8s_context
+  config_path            = "~/.kube/config" 
   cluster_ca_certificate = base64decode(google_container_cluster.default.master_auth[0].cluster_ca_certificate)
 
   ignore_annotations = [
@@ -13,12 +15,16 @@ provider "kubernetes" {
 
 //The deployment
 
-resource "kubernetes_deployment_v1" "default" {
+resource "kubernetes_deployment_v1" "go_time_api" {
   metadata {
-    name = "${var.cluster_name}-deployment"
+    name = var.cluster_name
+    labels = {
+      app = var.cluster_name
+    }
   }
 
   spec {
+    replicas = 1
     selector {
       match_labels = {
         app = var.cluster_name
@@ -39,99 +45,57 @@ resource "kubernetes_deployment_v1" "default" {
 
           port {
             container_port = 8080
-            name           = "${var.cluster_name}"
+            name           = var.cluster_name
           }
-
-          security_context {
-            allow_privilege_escalation = false
-            privileged                 = false
-            read_only_root_filesystem  = false
-
-            capabilities {
-              add  = []
-              drop = ["NET_RAW"]
-            }
-          }
-        }
-
-        security_context {
-          run_as_non_root = true
-
-          seccomp_profile {
-            type = "RuntimeDefault"
-          }
-        }
-
-        # Toleration is currently required to prevent perpetual diff:
-        # https://github.com/hashicorp/terraform-provider-kubernetes/pull/2380
-        toleration {
-          effect   = "NoSchedule"
-          key      = "kubernetes.io/arch"
-          operator = "Equal"
-          value    = "amd64"
         }
       }
     }
+
   }
 }
 
 //The service
 
-resource "kubernetes_service_v1" "default" {
+resource "kubernetes_service_v1" "go_time_api" {
   metadata {
-    name = "${var.cluster_name}-loadbalancer"
-    annotations = {
-      "networking.gke.io/load-balancer-type" = "Internal" 
-    }
+    name = var.cluster_name
   }
 
   spec {
     selector = {
-      app = kubernetes_deployment_v1.default.spec[0].selector[0].match_labels.app
+      app = var.cluster_name
     }
 
-    ip_family_policy = "RequireDualStack"
-
     port {
+      protocol    = "TCP"
       port        = 8080
       target_port = 8080
     }
 
-    type = "LoadBalancer"
+    type = "ClusterIP"
   }
-
-  depends_on = [time_sleep.wait_service_cleanup]
 }
 
-# Provide time for Service cleanup
-resource "time_sleep" "wait_service_cleanup" {
-  depends_on = [google_container_cluster.default]
-
-  destroy_duration = "180s"
-}
 
 
 //The ingress
 
-resource "kubernetes_ingress_v1" "example_ingress" {
+resource "kubernetes_ingress_v1" "go_time_api" {
   metadata {
-    name = "${var.cluster_name}-ingress"
+    name = var.cluster_name
+    annotations = {
+      "nginx.ingress.kubernetes.io/rewrite-target" = "/"
+    }
   }
 
   spec {
-    default_backend {
-      service {
-        name = "${var.cluster_name}-loadbalancer"
-        port {
-          number = 8080
-        }
-      }
-    }
-
+    ingress_class_name = "nginx"
     rule {
-      host = "cloud-engr-test.com"
       http {
         path {
+          path         = "/"
+          path_type    = "Prefix"
+
           backend {
             service {
               name = var.cluster_name
@@ -140,15 +104,12 @@ resource "kubernetes_ingress_v1" "example_ingress" {
               }
             }
           }
-
-          path = "/"
-          path_type = "Prefix"
         }
       }
     }
 
-    tls {
-      secret_name = "tls-secret"
-    }
+    # tls {
+    #   secret_name = "tls-secret"
+    # }
   }
 }

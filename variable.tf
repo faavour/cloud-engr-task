@@ -11,10 +11,14 @@ variable "region" {
 variable "cluster_name" {
   description = "Name of the cluster"
   type        = string
-  default     = "cloud-engr-test"
+  default     = "go-time-app"
 }
 variable "image" {
   description = "Name of the container image"
+  type        = string
+}
+variable "k8s_context" {
+  description = "context for the k8s cluster"
   type        = string
 }
 

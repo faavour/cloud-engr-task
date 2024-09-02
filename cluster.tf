@@ -17,12 +17,12 @@ resource "google_compute_subnetwork" "default" {
   network = google_compute_network.default.id
   secondary_ip_range {
     range_name    = "services-range"
-    ip_cidr_range = "192.168.0.0/24"
+    ip_cidr_range = "192.168.0.0/18"
   }
 
   secondary_ip_range {
     range_name    = "pod-ranges"
-    ip_cidr_range = "192.168.1.0/24"
+    ip_cidr_range = "192.168.64.0/18"
   }
 }
 
@@ -42,6 +42,21 @@ resource "google_container_cluster" "default" {
     cluster_secondary_range_name  = google_compute_subnetwork.default.secondary_ip_range[1].range_name
   }
   datapath_provider = "ADVANCED_DATAPATH"
-  initial_node_count = 1 
+  initial_node_count = 2 
   deletion_protection = false
 }
+
+resource "helm_release" "nginx_ingress" {
+  name       = "nginx-ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  namespace  = "default"  
+
+  set {
+    name  = "controller.replicaCount"
+    value = "1"
+  }
+
+  # Add any additional configurations needed for your setup here
+}
+
