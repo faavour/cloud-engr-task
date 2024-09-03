@@ -79,11 +79,4 @@ jobs:
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
-        if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-          terraform apply -var-file="terraform.tfvars" -auto-approve;
-        elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
-          terraform destroy -var-file="terraform.tfvars" -auto-approve;
-        else
-          echo "Invalid action specified: ${{ github.event.inputs.action }}";
-          exit 1;
-        fi
+        terraform apply -var-file="terraform.tfvars"
