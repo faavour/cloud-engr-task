@@ -59,7 +59,7 @@ Deploy: Configures and manages infrastructure using Terraform, applying or destr
 
 
 ## How to run the the application:
-The Pipeline was set to manual so that provisioning and destroying the infrastructure are done with serious intention. This way, we can control costs by avoiding accidental resource creation or deletion, and ensure that tearing down infrastructure is only done when you're sure it's absolutely the right move.
+The Pipeline was set to manual so that provisioning and destroying the infrastructure are done with serious intention. This way, we can control costs by avoiding accidental resource creation, and ensure that tearing down infrastructure is only done when you're sure it's absolutely the right move.
 
 The api is fully automated and deployed using github Actions. These are the steps to `provision` the infrastructure.
 1. Click on `Actions` tab
