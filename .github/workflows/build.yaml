@@ -73,7 +73,7 @@ jobs:
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
-        terraform force-unlock 1725376469627058
+        terraform force-unlock 1725376469627058  -auto-approve
         terraform plan -var-file="terraform.tfvars"
 
     - name: Terraform Apply or Destroy
