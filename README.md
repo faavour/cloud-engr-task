@@ -33,6 +33,7 @@ stage 3: Building with gcloud build:
 ## 3. Setting up the Infrastructure with Terraform:
 This infrastructure is built with Infra as Code with Terraform:
 The infrastructure contains:
+- Docker image
 - Api (built with Go lang)
 - Address
 - Subnets
@@ -45,6 +46,8 @@ The infrastructure contains:
 - Deployments
 - Service
 - IAM
+- Cloudbuild
+- Github Actions
 
 
 ## CICD pipeline
