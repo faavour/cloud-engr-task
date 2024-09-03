@@ -33,10 +33,11 @@ stage 3: Building with gcloud build:
 ## 3. Setting up the Infrastructure with Terraform:
 This infrastructure is built with Infra as Code with Terraform:
 The infrastructure contains:
-- Apc
+- Api (built with Go lang)
 - Address
 - Subnets
 - Cloud Router
+- Cloud NAT
 - Routes
 - kubernetes cluster
 - Ingress controller
