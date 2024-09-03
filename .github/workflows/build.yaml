@@ -57,7 +57,10 @@ jobs:
         echo 'region      = "${{ secrets.REGION }}"' >> terraform.tfvars
         echo 'k8s_context = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
         cat terraform.tfvars
+        pwd
 
     - name: Terraform Plan
-      run: terraform plan -var-file="terraform.tfvars"
+      run: |
+        pwd
+        # terraform plan -var-file="terraform.tfvars"
 
