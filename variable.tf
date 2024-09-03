@@ -21,5 +21,9 @@ variable "k8s_context" {
   description = "context for the k8s cluster"
   type        = string
 }
+variable "gcp_credentials" {
+  description = "service account key in json"
+  type        = string
+}
 
 

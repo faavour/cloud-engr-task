@@ -52,15 +52,14 @@ jobs:
     
     - name: Create terraform.tfvars
       run: |
-        echo 'image       = "europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest"' >> terraform.tfvars
-        echo 'project     = "${{ secrets.GCP_PROJECT_ID }}"' >> terraform.tfvars
-        echo 'region      = "${{ secrets.REGION }}"' >> terraform.tfvars
-        echo 'k8s_context = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
+        echo 'image           = "europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest"' >> terraform.tfvars
+        echo 'project         = "${{ secrets.GCP_PROJECT_ID }}"' >> terraform.tfvars
+        echo 'region          = "${{ secrets.REGION }}"' >> terraform.tfvars
+        echo 'k8s_context     = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
+        echo 'gcp_credentials = "${{ secrets.GCP_SA_KEY }}"' >> >> terraform.tfvars
         cat terraform.tfvars
-        pwd
 
     - name: Terraform Plan
       run: |
-        pwd
-        # terraform plan -var-file="terraform.tfvars"
+        terraform plan -var-file="terraform.tfvars"
 
