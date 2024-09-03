@@ -23,3 +23,6 @@ jobs:
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         install_components: 'kubectl'
+    
+    - name: Authenticate Docker with Google Container Registry
+      run: gcloud auth configure-docker
