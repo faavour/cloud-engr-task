@@ -49,7 +49,15 @@ jobs:
     
     - name: Terraform Init
       run: terraform init
+    
+    - name: Create terraform.tfvars
+      run: |
+        echo 'image       = "europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest"' >> terraform.tfvars
+        echo 'project_id  = "${{ secrets.GCP_PROJECT_ID }}"' >> terraform.tfvars
+        echo 'region      = "${{ secrets.REGION }}"' >> terraform.tfvars
+        echo 'k8s_context = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
+        cat terraform.tfvars
 
-    - name: Terraform Plan
-      run: terraform plan
+    # - name: Terraform Plan
+    #   run: terraform plan
 
