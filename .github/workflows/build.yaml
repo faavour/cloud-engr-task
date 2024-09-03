@@ -69,15 +69,22 @@ jobs:
         echo 'region          = "${{ secrets.REGION }}"' >> terraform.tfvars
         echo 'k8s_context     = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
 
-    - name: Terraform Plan
+        
+    - name: Terraform Destroy
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
-        terraform force-unlock -force 1725376469627058
-        terraform plan -var-file="terraform.tfvars"
+        terraform destroy
 
-    - name: Terraform Apply or Destroy
-      env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-      run: |
-        terraform apply -var-file="terraform.tfvars" -auto-approve
+    # - name: Terraform Plan
+    #   env:
+    #       GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+    #   run: |
+    #     terraform force-unlock -force 1725376469627058
+    #     terraform plan -var-file="terraform.tfvars"
+
+    # - name: Terraform Apply or Destroy
+    #   env:
+    #       GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+    #   run: |
+    #     terraform apply -var-file="terraform.tfvars" -auto-approve
