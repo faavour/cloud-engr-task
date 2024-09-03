@@ -17,7 +17,6 @@ provider "kubernetes" {
   host                   = "https://${google_container_cluster.go_time_app.endpoint}"
   token                  = data.google_client_config.default.access_token
   config_context         = var.k8s_context
-  config_path            = "~/.kube/config" 
   cluster_ca_certificate = base64decode(google_container_cluster.go_time_app.master_auth[0].cluster_ca_certificate)
 
   ignore_annotations = [
@@ -26,7 +25,6 @@ provider "kubernetes" {
   ]
 }
 provider "kubectl" {
-  config_path    = "~/.kube/config"
   config_context = var.k8s_context
 }
 
@@ -37,8 +35,7 @@ provider "google" {
 }
 
 provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"  
+  kubernetes { 
     config_context = var.k8s_context
   }
 }
