@@ -56,7 +56,9 @@ jobs:
         echo 'project         = "${{ secrets.GCP_PROJECT_ID }}"' >> terraform.tfvars
         echo 'region          = "${{ secrets.REGION }}"' >> terraform.tfvars
         echo 'k8s_context     = "${{ secrets.K8S_CONTEXT }}"' >> terraform.tfvars
-        echo 'gcp_credentials = "${{ secrets.GCP_SA_KEY }}"' >> terraform.tfvars
+        echo 'gcp_credentials = <<EOT' >> terraform.tfvars
+        echo "${{ secrets.GCP_SA_KEY }}" >> terraform.tfvars
+        echo 'EOT' >> terraform.tfvars
         cat terraform.tfvars
 
     - name: Terraform Plan
