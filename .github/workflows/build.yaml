@@ -50,6 +50,9 @@ jobs:
     - name: Terraform Init
       run: terraform init
     
+    - name: List Terraform State Resources
+      run: terraform state list 
+
     - name: Create terraform.tfvars
       run: |
         echo 'image           = "europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest"' >> terraform.tfvars
