@@ -1,14 +1,10 @@
 name: go-time CI/CD Pipeline
 
 on: 
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       action:
-        description: 'This helps choose Terraform action (apply or destroy)'
+        description: 'Terraform action (apply or destroy)'
         required: true
         default: 'apply'
         type: string
@@ -73,15 +69,17 @@ jobs:
       run: |
         terraform plan -var-file="terraform.tfvars"
 
-    - name: Terraform Apply or Destroy
+    - name: Terraform Apply
+      if: github.event.inputs.action == 'apply'
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
-        if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-          terraform apply -var-file="terraform.tfvars" -auto-approve;
-        elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
-          terraform destroy -var-file="terraform.tfvars" -auto-approve;
-        else
-          echo "Invalid action specified: ${{ github.event.inputs.action }}";
-          exit 1;
-        fi
+        terraform apply -var-file="terraform.tfvars" -auto-approve
+
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+      run: |
+        terraform force-unlock -force 1725379517522311
+        terraform destroy -auto-approve
