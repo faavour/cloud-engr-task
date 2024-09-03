@@ -21,5 +21,3 @@ variable "k8s_context" {
   description = "context for the k8s cluster"
   type        = string
 }
-
-
