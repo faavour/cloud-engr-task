@@ -74,6 +74,7 @@ jobs:
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
+        terraform force-unlock -force 1725379517522311
         terraform destroy -auto-approve
 
     # - name: Terraform Plan
