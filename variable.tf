@@ -17,7 +17,3 @@ variable "image" {
   description = "Name of the container image"
   type        = string
 }
-variable "k8s_context" {
-  description = "context for the k8s cluster"
-  type        = string
-}
