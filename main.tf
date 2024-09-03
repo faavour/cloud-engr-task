@@ -1,5 +1,8 @@
 terraform {
-
+    backend "gcs" {
+    bucket = "go-time-bucket"       
+    prefix = "terraform/state"        
+  }
 
   required_providers {
     kubernetes = {
@@ -24,6 +27,9 @@ provider "kubernetes" {
   ]
 }
 provider "kubectl" {
+    host                   = "https://${google_container_cluster.go_time_app.endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(google_container_cluster.go_time_app.master_auth[0].cluster_ca_certificate)
 }
 
 
@@ -34,5 +40,8 @@ provider "google" {
 
 provider "helm" {
   kubernetes { 
+    host                   = "https://${google_container_cluster.go_time_app.endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(google_container_cluster.go_time_app.master_auth[0].cluster_ca_certificate)
   }
 }
