@@ -62,3 +62,9 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
         terraform plan -var-file="terraform.tfvars"
+
+    - name: Terraform Apply
+      env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+      run: |
+        terraform apply -var-file="terraform.tfvars"
