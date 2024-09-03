@@ -26,3 +26,7 @@ jobs:
     
     - name: Authenticate Docker with Google Container Registry
       run: gcloud auth configure-docker
+    
+    - name: Build Docker Image with Google Cloud Build
+      run: |
+        gcloud builds submit --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest .
