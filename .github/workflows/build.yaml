@@ -90,7 +90,12 @@ jobs:
         sleep 180 
 
     - name: Verify API is accessible
+      env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
+        gcloud container clusters get-credentials go-time-apps --zone europe-west4-a --project ${{ secrets.GCP_PROJECT_ID }}
+        sleep 120 
+
         API_ENDPOINT=$(kubectl get ingress go-time-apps -n go-time-apps -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [ -z "$API_ENDPOINT" ]; then
           echo "Ingress address not found."
