@@ -61,7 +61,7 @@ Deploy: Configures and manages infrastructure using Terraform, applying or destr
 
 
 
-## How to run the the application: 
+# How to run the the application: 
 On your local:
 First things first, Terraform needs the backend bucket to exist before it can initialize the backend configuration. You have to remove it first.
 1. Remove the backend gcs configuration block (in main.tf;line 2-5)
@@ -79,7 +79,7 @@ First things first, Terraform needs the backend bucket to exist before it can in
 
 
 
-# How the application is deployed and ran in the pipeline
+## How the application is deployed and ran in the pipeline
 The Pipeline was set to manual so that provisioning and destroying the infrastructure are done with serious intention. This way, we can control costs by avoiding accidental resource creation, and ensure that tearing down infrastructure is only done when you're sure it's absolutely the right move.
 
 The api is fully automated and deployed using github Actions. These are the steps to `provision` the infrastructure.
