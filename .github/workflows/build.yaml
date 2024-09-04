@@ -89,12 +89,18 @@ jobs:
         echo "Waiting for API to be ready..."
         sleep 180 
 
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        install_components: 'kubectl, gke-gcloud-auth-plugin'
+
     - name: Verify API is accessible
       env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: |
         gcloud container clusters get-credentials go-time-apps --zone europe-west4-a --project ${{ secrets.GCP_PROJECT_ID }}
-        sleep 120 
+        sleep 180 
 
         API_ENDPOINT=$(kubectl get ingress go-time-apps -n go-time-apps -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [ -z "$API_ENDPOINT" ]; then
