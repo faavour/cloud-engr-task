@@ -13,8 +13,6 @@ resource "google_compute_router" "vpc_go_time_router" {
   network = google_compute_network.vpc_go_time_app.id
 }
 
-# Defining all subnets
-
 #Kubernetes subnetworks
 resource "google_compute_subnetwork" "go_time_app" {
   name = var.cluster_name
@@ -23,7 +21,7 @@ resource "google_compute_subnetwork" "go_time_app" {
   region        = var.region
 
   stack_type       = "IPV4_IPV6"
-  ipv6_access_type = "EXTERNAL" # Change to "EXTERNAL" if creating an external loadbalancer
+  ipv6_access_type = "EXTERNAL" 
 
   network = google_compute_network.vpc_go_time_app.id
   secondary_ip_range {

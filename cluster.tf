@@ -29,6 +29,5 @@ resource "helm_release" "nginx_ingress" {
     value = "1"
   }
 
-  # Add any additional configurations needed for your setup here
+  
 }
-

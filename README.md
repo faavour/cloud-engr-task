@@ -61,15 +61,34 @@ Deploy: Configures and manages infrastructure using Terraform, applying or destr
 
 
 
-## How to run the the application:
+## How to run the the application: 
+On your local:
+First things first, Terraform needs the backend bucket to exist before it can initialize the backend configuration. You have to remove it first.
+1. Remove the backend gcs configuration block (in main.tf;line 2-5)
+2. Authenticate on your cli with the command `gcloud auth application-default login`
+3. Create the artifact repository `gcloud artifacts repositories create cloud-engr-test --repository-format=docker`
+4. Build the image with `gcloud builds submit --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest`
+5. Setup your personal `terraform.tfvars`. it should contain:
+    - project  = 'your project ID'
+    - image    = 'your docker image'
+    - region   = 'your desired region'
+6. Run `terraform init`
+7. Run `terraform plan -var-file="terraform.tfvars"`
+8. Run ``terraform apply -var-file="terraform.tfvars"`
+9. Test that it works:
+
+
+
+# How the application is deployed and ran in the pipeline
 The Pipeline was set to manual so that provisioning and destroying the infrastructure are done with serious intention. This way, we can control costs by avoiding accidental resource creation, and ensure that tearing down infrastructure is only done when you're sure it's absolutely the right move.
 
 The api is fully automated and deployed using github Actions. These are the steps to `provision` the infrastructure.
-1. Click on `Actions` tab
+1. On `Actions` tab
 2. At the left panel, Select "go-time CI/CD Pipeline"
 3. A drop down panel labelled "This workflow has a workflow_dispatch event trigger" will show.
 4. Click on Run Workflow
 5. Select `Apply`
+
 
 To `destroy` the infrastructure
 
