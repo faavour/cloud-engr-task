@@ -49,6 +49,49 @@ The infrastructure contains:
 - Cloudbuild
 - Github Actions
 
+There are diffrent files, and these are what the files do:
+1. app.tf:
+- The `data google_client_config` block retrieves your Google Cloud credentials to authenticate with Google Cloud and interact with the Kubernetes cluster.
+- The `Kubernetes namespace` block is where all the k8s resources for the time API will live.
+- The `kubernetes_deployment_v1` block defines the deployment for the time API. It specifies how the application should run in Kubernetes
+- The `kubernetes_service_v1` block defines a K8s service that exposes the time API application inside the cluster
+- The `kubernetes_ingress_v1` block sets up an ingress resource, which exposes tthe time API to external traffic by routing requests from outside the cluster to the service
+
+2. cluster.tf:
+- The `google_container_cluster` block defines infrastructure resources for a Google Kubernetes Engine (GKE) cluster needed to run containerized applications in GKE.
+ The `helm_release` block installs the NGINX Ingress controller which allows you to manage external access to your services using Terraform.
+
+3. main.tf:
+The `terraform` block contains:
+- The `Backend` block which uses Google Cloud Storage (GCS) as the backend to store  the Terraform state.
+-  The `required_providers` block has:
+    -  the `kubernetes` provider which onnects to the GKE cluster using the cluster's API endpoint and access token
+    - the `kubectl` provider which allows you to run kubectl commands directly from Terraform.
+    - the `google` provider manages Google Cloud resources
+    - the `helm` provider allows you to manage Helm charts within the Kubernetes cluster
+
+4. nat.tf:
+- The `google_compute_address` block reserves an external IP address which this IP will be used for outbound traffic from the VPC to the internet.
+- The `google_compute_router_nat` block provides a A NAT configuration for a Google Cloud router, which ensures that internal resources within the VPC can access the internet using the static external IP while maintaining private internal IP addresses.
+
+5. Security.tf:
+- The `google_compute_firewall` block creates a firewall rule which allows ICMP traffic and TCP traffic on ports 80 and 8080, with a source range of `0.0.0.0/0`.
+- The `google_service_account` block creates a service account.
+- The `google_project_iam_member` assigns the following roles:
+    - Grants `roles/compute.instanceAdmin`, allowing it to manage Compute Engine instances.
+    - Grants `roles/artifactregistry.writer`, allowing write access to Artifact Registry but not delete permissions.
+    -  Grants `roles/compute.networkAdmin`, allowing the service account to manage VPCs and other networking resources.
+    - Grants `roles/container.admin`, providing full admin access to Google Kubernetes Engine (GKE) resources.
+    - Grants `roles/storage.objectAdmin`, allowing the service account to manage objects in Google Cloud Storage.
+
+6. vpc.tf:
+- The `google_compute_network` block creates a custom VPC, with the option for Unique Local Address (ULA) internal IPv6 enabled, meaning auto-created subnetworks are disabled, giving more control over the network setup.
+- The `google_compute_router` block creates network router defined to enable dynamic routing within the VPC.
+- The `google_compute_subnetwork` block creates a primary subnetwork with both IPv4 and IPv6 stack. IPv6 access is external-facing. Two secondary ranges are also created: one for Kubernetes services
+
+7. variables.tf:
+These are the variables that can be configured for deployment.
+
 
 ## CICD pipeline
 The pipeline is to build and provision the infrastructure to kubernetes cluster. 

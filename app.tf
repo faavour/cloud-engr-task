@@ -1,9 +1,18 @@
 data "google_client_config" "default" {}
+
+# Namespace
+resource "kubernetes_namespace" "go_time_app_ns" {
+  metadata {
+    name = var.cluster_name
+  }
+}
+
 //The deployment
 
 resource "kubernetes_deployment_v1" "go_time_api" {
   metadata {
     name = var.cluster_name
+    namespace = var.cluster_name
     labels = {
       app = var.cluster_name
     }
@@ -45,6 +54,7 @@ resource "kubernetes_deployment_v1" "go_time_api" {
 resource "kubernetes_service_v1" "go_time_api" {
   metadata {
     name = var.cluster_name
+    namespace = var.cluster_name
   }
 
   spec {
@@ -69,6 +79,7 @@ resource "kubernetes_service_v1" "go_time_api" {
 resource "kubernetes_ingress_v1" "go_time_api" {
   metadata {
     name = var.cluster_name
+    namespace = var.cluster_name
     annotations = {
       "nginx.ingress.kubernetes.io/rewrite-target" = "/"
     }
