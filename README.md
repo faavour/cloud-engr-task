@@ -107,18 +107,21 @@ Deploy: Configures and manages infrastructure using Terraform, applying or destr
 # How to run the the application: 
 On your local:
 First things first, Terraform needs the backend bucket to exist before it can initialize the backend configuration. You have to remove it first.
-1. Remove the backend gcs configuration block (in main.tf;line 2-5)
-2. Authenticate on your cli with the command `gcloud auth application-default login`
-3. Create the artifact repository `gcloud artifacts repositories create cloud-engr-test --repository-format=docker`
-4. Build the image with `gcloud builds submit --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest`
+1. Remove the backend gcs configuration block (in main.tf;line 2-5) so terraform automatically uses your local to store the backend config.
+2. Authenticate on your cli with the command `gcloud auth application-default login`.
+3. Create the artifact repository `gcloud artifacts repositories create cloud-engr-test --repository-format=docker`, in this case `cloud-engr-test` is the name of the artifact repo.
+4. Build the image with `gcloud builds submit --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-engr-test/go-time-api:latest`, where `GCP_PROJECT_ID` is your project ID for your particular project.
 5. Setup your personal `terraform.tfvars`. it should contain:
     - project  = 'your project ID'
     - image    = 'your docker image'
     - region   = 'your desired region'
 6. Run `terraform init`
 7. Run `terraform plan -var-file="terraform.tfvars"`
-8. Run ``terraform apply -var-file="terraform.tfvars"`
+8. Run `terraform apply -var-file="terraform.tfvars"`
 9. Test that it works:
+    - Run `kubectl get ingress go-time-apps -n go-time-apps -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` to retrieve the ip
+    - Hit `localhost:8080/time` endpoint.
+10. Destroy the infrastructure with `terraform destroy`
 
 
 
